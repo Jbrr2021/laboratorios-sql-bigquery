@@ -1,25 +1,43 @@
-# 🚀 Meu Laboratório Prático de FinOps no Google BigQuery
+# 🚀 Laboratório Prático de Cloud FinOps no Google BigQuery
 
-Neste repositório, registro a aplicação prática dos meus estudos de Engenharia de Dados com foco em cultura FinOps e otimização de custos em nuvem. Todo o projeto foi desenvolvido por mim dentro do ambiente Sandbox do **Google Cloud Platform (GCP)**.
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-BigQuery-4285F4?style=flat&logo=googlecloud&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-Analytics_&_DDL-CC292B?style=flat&logo=mysql&logoColor=white)
+![FinOps](https://img.shields.io/badge/Framework-Cloud_FinOps-00C49F?style=flat)
+![BigQuery Sandbox](https://img.shields.io/badge/Environment-GCP_Sandbox-orange?style=flat)
 
-## 📖 A Origem do Desafio (Conectando Teoria e Prática)
-Após concluir a leitura do **Primeiro Capítulo do livro "Cloud FinOps" (2ª Edição)**, absorvi um conceito crucial trazido pelos autores: o grande desafio da nuvem não é apenas a tecnologia em si, mas o desperdício invisível gerado pela facilidade de criar recursos caros sem a governança correta. 
+Laboratório prático de Engenharia de Dados e governança financeira em nuvem desenvolvido no ambiente **Google BigQuery Sandbox**. 
 
-Para fixar esse aprendizado, decidi sair da teoria e simular um cenário real do dia a dia corporativo.
+O projeto aplica na prática os conceitos da fase de **"Informar"** do framework *Cloud FinOps* (baseado no livro *Cloud FinOps - 2ª Edição*), transformando logs brutos de faturamento em relatórios executivos para identificação imediata de desperdícios orçamentários.
 
-## 💼 O Pedido do Gestor
-Imaginei um cenário onde o meu gestor técnico me trouxe uma demanda urgente de negócio: 
-> *"Preciso de um relatório gerencial que nos dê visibilidade imediata sobre os custos da nossa infraestrutura. Quero que você analise nossos recursos e crie uma classificação visual: se o recurso custou menos de R$ 50,00, rotule como 'Baixo Custo'; se custou entre R$ 50,00 e R$ 150,00, rotule como 'Atenção'; e se passou de R$ 150,00, coloque uma etiqueta de 'Crítico'."*
+---
 
-## 🛠️ O Que Eu Desenvolvi
-Para solucionar esse problema e entregar o valor que o negócio precisava, segui os seguintes passos técnicos no BigQuery:
+## 💼 O Desafio de Negócio ("Pedido do Gestor")
 
-1. **Modelagem e Carga de Dados:** Criei fisicamente um Dataset próprio (`meu_finops`) e, utilizando instruções SQL DDL, estruturei uma tabela simulando logs de faturamento reais de recursos de computação (*Compute Engine, BigQuery, Cloud SQL e Cloud Storage*).
-2. **Análise Condicional Dinâmica:** Escrevi uma query utilizando a cláusula `CASE WHEN` para realizar o tagueamento automático dos dados linha por linha, atendendo aos critérios de custo estipulados pelo gestor.
-3. **Agrupamento Executivo:** Evoluí a consulta combinando o `CASE WHEN` com funções de agregação (`SUM`, `COUNT`) e agrupamentos (`GROUP BY`). Meu objetivo foi tirar o foco do detalhe de infraestrutura e gerar uma visão consolidada para tomadas de decisão rápidas da diretoria.
+> *"Precisamos de visibilidade imediata sobre os custos da nossa infraestrutura em nuvem. Analise os recursos faturados e aplique uma regra de classificação condicional:*
+> * *Abaixo de R$ 50,00: **'Baixo Custo'***
+> * *Entre R$ 50,00 e R$ 150,00: **'Atenção'***
+> * *Acima de R$ 150,00: **'Crítico'***
+> *Gere também uma visão consolidada para tomada de decisão da diretoria."*
 
-## 📈 Resultados Obtidos com a Minha Query
-Consegui consolidar o cenário financeiro da empresa com precisão. O relatório final demonstrou de forma cirúrgica que **R$ 490,70** do orçamento total estavam concentrados em apenas **2 recursos de estado Crítico** (com destaque para o processamento de consultas do BigQuery). 
+---
 
-Com essa entrega, mostrei na prática como a Engenharia de Dados atua diretamente na fase de **"Informar"** do framework FinOps, gerando visibilidade para que o time de tecnologia saiba exatamente onde cortar gastos sem afetar a operação.
+## 🛠️ Arquitetura da Solução & Modelagem
+
+Para simular o ambiente corporativo, estruturei no BigQuery o dataset `meu_finops` e modelei a tabela analítica de faturamento com recursos de computação (*Compute Engine, BigQuery, Cloud SQL e Cloud Storage*).
+
+### 1. Classificação Condicional por Recurso
+Implementação de regras de rotulagem dinâmica via `CASE WHEN`:
+
+```sql
+SELECT
+    servico,
+    ambiente,
+    equipe,
+    custo_total,
+    CASE 
+        WHEN custo_total < 50.00 THEN '🟢 Baixo Custo'
+        WHEN custo_total BETWEEN 50.00 AND 150.00 THEN '🟡 Atenção'
+        ELSE '🔴 Crítico'
+    END AS status_custo
+FROM `meu_finops.custos_nuvem_teste`;
 
